@@ -1,0 +1,49 @@
+---
+- hosts: all
+  become: true
+  vars:
+    create_containers: 4
+    default_container_name: docker
+    default_container_image: ubuntu
+    default_container_command: sleep 1d
+
+  tasks:
+    - name: Install aptitude using apt
+      apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+
+    - name: Install required system packages
+      apt: name={{ item }} state=latest update_cache=yes
+      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu bionic stable
+        state: present
+
+    - name: Update apt and install docker-ce
+      apt: update_cache=yes name=docker-ce state=latest
+
+    - name: Install Docker Module for Python
+      pip:
+        name: docker
+    - name: ansible create directory example
+      file:
+        path: /docker/grafana/data
+        state: directory
+
+    - name: Comando de permissão
+      command:
+        cmd: chown -R 472:472 /docker/grafana/data
+
+    - name: Comando de permissão 2
+      command:
+        cmd: chmod -R 775 /docker/grafana
+
+    - name: Docker Run Grafana
+      command:
+        cmd: docker run -d -p 3000:3000 grafana/grafana
