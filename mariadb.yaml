@@ -6,28 +6,28 @@
   remote_user: lcars
 
   tasks:
-    - name: Install yum utils
+    - name: Instala yum utils
       yum:
         name: yum-utils
         state: latest
 
-    - name: Install device-mapper-persistent-data
+    - name: Instala device-mapper-persistent-data
       yum:
         name: device-mapper-persistent-data
         state: latest
 
-    - name: Install lvm2
+    - name: Instala lvm2
       yum:
         name: lvm2
         state: latest
 
-    - name: Add Docker repo
+    - name: Adiciona Docker repositorio
       get_url:
         url: https://download.docker.com/linux/centos/docker-ce.repo
         dest: /etc/yum.repos.d/docer-ce.repo
       become: yes
 
-    - name: Enable Docker Edge repo
+    - name: Ativa o repositorio Docker Edge
       ini_file:
         dest: /etc/yum.repos.d/docer-ce.repo
         section: 'docker-ce-edge'
@@ -35,7 +35,7 @@
         value: 0
       become: yes
 
-    - name: Enable Docker Test repo
+    - name: Ativa o repositorio Docker Test
       ini_file:
         dest: /etc/yum.repos.d/docer-ce.repo
         section: 'docker-ce-test'
@@ -43,13 +43,13 @@
         value: 0
       become: yes
 
-    - name: Install Docker
+    - name: Instala Docker
       package:
         name: docker-ce
         state: latest
       become: yes
 
-    - name: Start Docker service
+    - name: Inicia o servico Docker
       service:
         name: docker
         state: started
